@@ -1,6 +1,6 @@
 <template>
     <div class="select-local">
-        <router-link v-for="(item,i) of datas" :key="i" :to="{name:'Echarts',params:{prov:item}}">{{item}}</router-link>
+        <router-link v-for="(item,i) of data" :key="i" :to="{name:'Echarts',params:{prov:item}}">{{item}}</router-link>
     </div>
 </template>
 <script>
@@ -11,21 +11,19 @@ export default {
     },
     data(){
         return {
-            // 全部数据
-            data: this.$store.state.data,
-            // 根据页面所需格式整理出来的数据
-            datas: []
+            data:''
         }
     },
     methods:{
         getData(){
-            // 整理出接口中所有的省份名
-            let data = JSON.parse(this.data).cityDatas.data
+            // 获取vuex中的数据
+            let data = this.$store.state.data.cityDatas.data
+            // 整理数据
             let dataArr = []
             for (let key in data) {
                 dataArr.push(data[key].provinceName)
             }
-            this.datas = dataArr
+            this.data = dataArr
         }
     }
 }

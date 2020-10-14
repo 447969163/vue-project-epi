@@ -13,6 +13,7 @@ import 'echarts/lib/chart/radar/'
 //挂载echarts到vue原型
 Vue.prototype.$echarts = echarts
 
+Vue.prototype.$bus = new Vue()
 Vue.config.productionTip = false
 
 new Vue({

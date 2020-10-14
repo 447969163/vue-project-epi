@@ -2,7 +2,7 @@
     <div class="china-data">
         <span>国内疫情数据</span>
         <!-- 首页格子显示 -->
-        <div class="item" v-for="(item,i) of datas" :key="i">
+        <div class="item" v-for="(item,i) of data" :key="i">
             <span>{{item.title}}</span>
             <span>{{item.bold}}</span>
             <span>{{item.subtitle}}</span>
@@ -15,23 +15,20 @@
 <script>
 export default {
     name: "TotalData",
-    props:['data'],
     data(){
         return {
-            updataTime:'',
-            // 存储整理好的数据
-            datas:''
+            data:'',
+            updataTime: ''
         }
     },
-    watch:{
-        data(){
-            this.getData()
-        }
+    created(){
+        // 获取父组件传递来的值
+        this.$bus.$on('waitData',this.getData)
     },
     methods:{
-        getData(){
+        getData(e){
             // 拿到数据
-            let data = this.data.data.chinaData[0]
+            let data = e.data.chinaData[0]
             // 取出数据中的更新时间
             this.updataTime = new Date(data.modifyTime).toLocaleDateString()
             // 整理数据格式
@@ -44,7 +41,7 @@ export default {
                 {'title':'累计死亡','subtitle':'较昨日','bold':data.deadCount,'fine':data.deadIncr},
                 {'title':'累计治愈','subtitle':'较昨日','bold':data.curedCount,'fine':data.curedIncr}
             )
-            this.datas = datas
+            this.data = datas
         }
     }
 }

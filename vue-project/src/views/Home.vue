@@ -1,8 +1,9 @@
 <template>
 <div>
   <Header />
-  <TotalData :data="data"/>
-  <Echarts :data="data"/>
+  <TotalData />
+  <Echarts />
+  <!-- <CityData /> -->
 </div>
 </template>
 <script>
@@ -10,32 +11,27 @@
 import Header from '../components/Header'
 import TotalData from '../components/TotalData'
 import Echarts from '../components/Echarts'
+import CityData from '../components/CityData'
 
 export default {
   name:'Home',
   components: {
     Header,
     TotalData,
-    Echarts
+    Echarts,
+    CityData
   },
   created(){
     this.getData()
   },
-  data(){
-    return {
-      // 存储请求结果
-      data:'',
-    }
-  },
   methods:{
-    // 发送请求、将请求结果放在localstorage中，并传递给vuex
+    // 发送请求
     async getData(){
       await this.$axios.get('/epidata').then((res)=>{
-        localStorage.setItem('data',JSON.stringify(res.data))
-      }).then(()=>{
-        this.$store.commit('setData',localStorage.getItem('data'))
-      }).then(()=>{
-        this.data = JSON.parse(this.$store.state.data)
+        // 将请求结果分发给子组件
+        this.$bus.$emit('waitData',res.data)
+        // 存一份到vuex
+        this.$store.commit('setData',res.data)
       })
     }
   }

@@ -1,47 +1,43 @@
 <template>
     <div class="echarts">
         <div id="charts"></div>
+        <CityData :cityData="cityData"/>
     </div>
 </template>
 <script>
+import CityData from './CityData'
 export default {
     name:'Echarts',
-    props:['data'],
+    components:{
+        CityData
+    },
+    created(){
+        // 获取父组件传递的数据
+        this.$bus.$on('waitData',this.getData)
+    },
     data(){
         return {
-            // echarts绘制所需格式整理好的数据
-            datas:[],
-            // 获取省份名
-            prov: this.$route.params.prov || '湖北省'
-        }
-    },
-    watch:{
-        data(){
-            new Promise((resolve,reject)=>{
-                resolve(this.getData())
-            }).then(()=>{
-                this.draw()
-            })
+            prov: this.$route.params.prov || '湖北省',
+            cityData: []
         }
     },
     methods:{
-        // 数据处理
-        getData(){
-            let data = this.data.cityDatas.data
+        getData(e){
+            let data = e.cityDatas.data
             // 根据省份名取出数据
             let arr = data.filter((item)=>{
                 return item.provinceName == this.prov
             })
+            this.cityData = arr
             // 对省份数据进行处理
             let datas = []
             arr.forEach(item => {
                  datas.push({'name':'现存确诊','value':item.currentConfirmedCount},{'name':'累计确诊','value':item.confirmedCount},{'name':'死亡','value':item.deadCount},{'name':'治愈','value':item.curedCount})         
             });
-            this.datas = datas
+            this.draw(datas)
         },
-        // echarts绘制
-        draw(){
-            // 绘制echarts
+        // 绘制echarts
+        draw(datas){
             let myCharts = this.$echarts.init(document.getElementById('charts'))
             myCharts.setOption({
                 title:{
@@ -72,7 +68,7 @@ export default {
                             position:'inside'
                         },
                         // 填充数据
-                        data:this.datas
+                        data:datas
                     }
                 ]
             })

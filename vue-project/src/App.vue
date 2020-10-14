@@ -81,6 +81,9 @@ html{
 a {
   text-decoration: none;
 }
+ul {
+  list-style: none;
+}
 //主体居中
 body{
   min-width: 320px;

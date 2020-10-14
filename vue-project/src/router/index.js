@@ -13,7 +13,7 @@ const routes = [
     component: Home,
     children: [
       {
-        path: 'Echarts',
+        path: '/echarts',
         name: 'Echarts',
         component: Echarts
       }
