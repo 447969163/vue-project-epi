@@ -1,9 +1,9 @@
 <template>
-<div>
+<div class="home">
   <Header />
   <TotalData />
   <Echarts />
-  <!-- <CityData /> -->
+  <Footer />
 </div>
 </template>
 <script>
@@ -11,7 +11,7 @@
 import Header from '../components/Header'
 import TotalData from '../components/TotalData'
 import Echarts from '../components/Echarts'
-import CityData from '../components/CityData'
+import Footer from '../components/Footer'
 
 export default {
   name:'Home',
@@ -19,7 +19,7 @@ export default {
     Header,
     TotalData,
     Echarts,
-    CityData
+    Footer
   },
   created(){
     this.getData()

@@ -60,7 +60,7 @@ export default {
 <style lang="less">
 @num:50;
 .city {
-    margin: 20rem/@num auto;
+    margin: 10rem/@num auto;
     padding-top: 40rem/@num;
     padding-bottom: 40rem/@num;
     width: 720rem/@num;

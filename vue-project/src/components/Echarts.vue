@@ -84,7 +84,6 @@ export default {
     .echarts {
     margin: 20rem/@num auto;
     width:720rem/@num;
-    height: 750rem/@num;
     background-color: #FFFFFF;
     #charts {
         width: 720rem/@num;
