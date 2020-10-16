@@ -23,6 +23,10 @@ api目录
 |:---|:---|
 |页面|Home|
 |页面|SelectLocal|
+|页面|Login|
+|页面|Register|
+|页面|Shop|
+|页面|User|
 |组件|Header|
 |组件|TotalData|
 |组件|Echarts|
@@ -42,5 +46,8 @@ api目录
 + CityData监听Echarts组件传入的数据变化
 + 确认数据拿到了，就开始对数据进行整理，抽出所有城市名
 + 过滤所点城市的数据，渲染到页面
++ 路由守卫监听进入/user路由
++ 如果没有token，则返回至/login路由
++ 监听注册页面请求的返回结果，如果接口返回数据表示成功状态，则直接跳转到/login路由
 # 效果展示
 https://www.achrome.cn/#/
