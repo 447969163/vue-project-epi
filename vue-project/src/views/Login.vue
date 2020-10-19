@@ -2,7 +2,7 @@
     <div class="login">
         <div class="form">
             <span>欢迎登录</span>
-            <input type="text" placeholder="用户名" v-model="uname">
+            <input type="text" placeholder="用户名" v-model="uname" v-focus>
             <input type="password" placeholder="密码" v-model="upassword">
             <button @click="login">登录</button>
             <router-link to="/register">立即注册</router-link>

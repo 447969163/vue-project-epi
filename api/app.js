@@ -6,11 +6,14 @@ app.listen(3000)
 const bodyParser = require('body-parser')
 app.use(bodyParser.urlencoded({extended:true}))
 // 跨域中间件
-app.use(cors({
-    origin:['*'],
-    methods:['GET','POST'],
-    allowedHeaders: ['Content-Type']
-}))
+app.all('*', function(req, res, next) {  
+    res.header("Access-Control-Allow-Origin", "*");  
+    res.header("Access-Control-Allow-Headers", "Content-Type, Content-Length, Token");  
+    res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");  
+    res.header("X-Powered-By",' 3.2.1')  
+    res.header("Content-Type", "application/json;charset=utf-8");  
+    next();  
+});  
 // 数据路由
 const epiDataRouter = require('./routes/epiData')
 app.use('/api',epiDataRouter)
@@ -22,6 +25,14 @@ app.use('/api',registerRouter)
 // 登录路由
 const loginRouter = require('./routes/login')
 app.use('/api',loginRouter)
+
+// 商品路由
+const goodsRouter = require('./routes/goods')
+app.use('/api',goodsRouter)
+
+// 商品详情页路由
+const productRouter = require('./routes/product')
+app.use('/api',productRouter)
 
 // 中间件验证token
 // 引入jwt

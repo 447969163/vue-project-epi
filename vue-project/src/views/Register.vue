@@ -1,12 +1,12 @@
 <template>
     <div class="register">
         <div class="form">
-            <input type="text" placeholder="昵称" v-model="unick">
+            <input type="text" placeholder="昵称" v-model="unick" v-focus>
             <input type="text" placeholder="用户名/登录名" v-model="uname">
             <input type="password" placeholder="请输入密码" v-model="upassword">
             <input type="password" placeholder="再次输入密码" v-model="upasswordAgain">
             <input type="text" placeholder="地址" v-model="address">
-            <button @click="register">注册</button>
+            <button @click="verify">注册</button>
             <router-link to="/login">已有账号？立即登录</router-link>
         </div>
         <span class="alert" v-show="isShow">注册成功，即将跳转登录页面</span>
@@ -32,8 +32,10 @@ export default {
         }
     },
     methods:{
-        async register(){
-            this.unick&&this.uname&&this.upassword&&this.upasswordAgain ? 
+        verify(){
+            this.unick&&this.uname&&this.upassword&&this.upasswordAgain ? this.upassword == this.upasswordAgain ? this.getResult() : false : ''
+        },
+        async getResult(){
             // 通过验证后提交注册
             await this.$axios.post('/register',`unick=${this.unick}&uname=${this.uname}&upassword=${this.upassword}&address=${this.address}`).then((res)=>{
                 if(res.data.code) {
@@ -43,7 +45,6 @@ export default {
                     },500)
                 }
             })
-            : false
         }
     }
 }
