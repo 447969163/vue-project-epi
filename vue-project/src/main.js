@@ -18,6 +18,10 @@ Vue.directive('focus',{
     e.focus()
   }
 })
+// 自定义过滤器
+Vue.filter('toDate',(oldVal)=>{
+  return new Date(oldVal).toLocaleDateString()
+})
 Vue.prototype.$bus = new Vue()
 Vue.config.productionTip = false
 

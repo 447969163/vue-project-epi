@@ -47,7 +47,7 @@ const routes = [
   },{
     path: '/product/:pid',
     name: 'Product',
-    component: ()=>import(/*webpackChunkName:"production"*/ '@/views/Product.vue')
+    component: ()=> import(/*webpackChunkName:"production"*/ '@/views/Product.vue')
   }
 ]
 

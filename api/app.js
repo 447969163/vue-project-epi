@@ -1,19 +1,22 @@
 const express = require('express')
-const cors = require('cors')
 let app = express()
 app.listen(3000)
 //body-parser 中间件
 const bodyParser = require('body-parser')
 app.use(bodyParser.urlencoded({extended:true}))
+
 // 跨域中间件
-app.all('*', function(req, res, next) {  
-    res.header("Access-Control-Allow-Origin", "*");  
-    res.header("Access-Control-Allow-Headers", "Content-Type, Content-Length, Token");  
-    res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");  
-    res.header("X-Powered-By",' 3.2.1')  
-    res.header("Content-Type", "application/json;charset=utf-8");  
-    next();  
-});  
+app.all('*',(req, res, next)=>{ 
+    // 设置同源
+    res.header("Access-Control-Allow-Origin", "*")
+    // 设置headers
+    res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Token, Content-Length")
+    // 设置请求方式
+    res.header("Access-Control-Allow-Methods","POST,GET,OPTIONS")
+    res.header("Content-Type","application/json;charset=utf-8")
+    next()
+});
+
 // 数据路由
 const epiDataRouter = require('./routes/epiData')
 app.use('/api',epiDataRouter)
@@ -40,7 +43,7 @@ const jwt = require('./jwt')
 //中间件
 app.use((req,res,next)=>{
     // 如果是需要携带token才能访问的路径
-    if(req.url.startsWith('/api/userinfo')) {
+    if(req.url.startsWith('/api/userinfo')||req.url.startsWith('/api/insertorder')) {
         // 获取请求头中的token
         let token = req.headers.token
         // 验证【解析】token
@@ -49,7 +52,7 @@ app.use((req,res,next)=>{
         if (result.name == 'TokenExpiredError') {// 如果返回结果的name属性是TokenExpiredError，则说明token已超时
             res.send({"code":403,"msg":"token超时"})
         } else if (result.name == 'JsonWebTokenError') { // 如果返回结果是JsonWebTokenError，则说明token不对
-            res.send({"code":403,"msg":"token错误"})
+            res.send({"code":402,"msg":"token错误"})
         } else { // 如果正确解析了数据对象，就继续执行
             next()
         }
@@ -61,3 +64,6 @@ app.use((req,res,next)=>{
 // 用户中心路由
 const userInfoRouter = require('./routes/userInfo')
 app.use('/api',userInfoRouter)
+// 插入订单路由
+const insertOrderRouter = require('./routes/insertOrder')
+app.use('/api',insertOrderRouter)

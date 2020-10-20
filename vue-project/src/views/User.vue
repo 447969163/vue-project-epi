@@ -1,10 +1,17 @@
 <template>
     <div class="user">
-        <div class="userinfo" v-for="(item,i) of data" :key="i">
-                <span>{{item.unick}}</span>
-                <span>uid:{{item.uid}}</span>
-                <span>{{item.address == 'null' ? item.address='未填写地址' : item.address}}</span>
-                <button @click="logOut">退出登录</button>
+        <div class="userinfo">
+            <div class="user" v-for="(item,i) of userData" :key="i-(orderData.length+1)">
+                <span>用户昵称：{{item.unick}}</span>
+                <span>用户地址：{{item.address}}</span>
+            </div>
+            <span>订单记录</span>
+            <div class="order" v-for="(item,i) of orderData" :key="i">
+                <span>{{item.odate | toDate}}</span>
+                <span>消费{{item.omoney}}元</span>
+                <span>状态：{{item.ostate}}</span>
+            </div>
+            <button @click="logOut">退出登录</button>
         </div>
         <Footer />
     </div>
@@ -22,13 +29,16 @@ export default {
     },
     data(){
         return {
-            data:[]
+            userData:[],
+            orderData: []
         }
     },
     methods: {
         async getData(){
             this.$axios.post('/userinfo',{},{headers:{'token':localStorage.getItem('token')}}).then((res)=>{
-                this.data = res.data
+                localStorage.setItem('uid',res.data.userdata[0].uid)
+                this.userData = res.data.userdata
+                this.orderData = res.data.orderdata
             })
         },
         logOut(){
@@ -48,19 +58,25 @@ export default {
         padding-bottom: 50rem/@num;
         width: 15rem;
         background-color: #FFFFFF;
+        >.user {
+            width: 100%;
+            >span {
+                display: block;
+                font-size: 40rem/@num;
+            }
+        }
         >span {
             display: block;
-            padding: 20rem/@num 50rem/@num;
+            margin: 20rem/@num auto;
+            text-align: center;
+            font-size: 35rem/@num;
         }
-        >span:first-child {
-            font-size: 30rem/@num;
-        }
-        >span:nth-child(2) {
-            font-size: 20rem/@num;
-            color: #e0e0e0;
-        }
-        >span:nth-child(3) {
-            font-size: 10rem/@num;
+        .order {
+            width: 100%;
+            >span {
+                margin: 15rem/@num auto;
+                font-size: 30rem/@num;
+            }
         }
         >button {
             margin: 40rem/@num auto;

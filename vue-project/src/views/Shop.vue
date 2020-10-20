@@ -4,7 +4,7 @@
             <router-link class="goods" v-for="(item,i) of data" :key="i" :to="`/product/${item.pid}`">
                 <img :src="`${item.pimg}`" alt=""/>
                 <span>{{item.product}}</span>
-                <span>¥{{fixed}}</span>
+                <span>{{item.price.toFixed(2)}}</span>
             </router-link>
         </div>
         <Footer />
@@ -19,11 +19,6 @@ export default {
     },
     created(){
         this.getData()
-    },
-    computed:{
-        fixed(){
-            return this.data[0].price.toFixed(2)
-        }
     },
     data(){
         return {
@@ -72,7 +67,7 @@ export default {
                 width:95%;
                 height: 100rem/@num;
                 overflow: hidden;
-                font-size: 8rem/@num;
+                font-size: 18rem/@num;
             }
             >span:nth-of-type(2) {
                 margin-top: 10rem/@num;
