@@ -9,7 +9,8 @@
             <button @click="verify">注册</button>
             <router-link to="/login">已有账号？立即登录</router-link>
         </div>
-        <span class="alert" v-show="isShow">注册成功，即将跳转登录页面</span>
+        <span v-show="isShow">注册成功，即将跳转登录页面</span>
+        <span v-show="isErr">{{errMsg}}</span>
         <Footer />
     </div>
 </template>
@@ -28,12 +29,26 @@ export default {
             upassword: null,
             upasswordAgain: null,
             address: null,
-            isShow: false
+            isShow: false,
+            isErr: false,
+            errMsg: ''
         }
     },
     methods:{
         verify(){
-            this.unick&&this.uname&&this.upassword&&this.upasswordAgain ? this.upassword == this.upasswordAgain ? this.getResult() : false : ''
+            this.unick&&this.uname&&this.upassword&&this.upasswordAgain ? 
+            this.upassword == this.upasswordAgain ? this.getResult() : this.errTwo()
+            : this.errOne()
+        },
+        errOne(){
+            this.errMsg = '有必填项未填写'
+            this.isErr = true
+            setTimeout(()=>{this.isErr = false},800)
+        },
+        errTwo(){
+            this.isErr = true
+            this.errMsg = '两次输入密码不一致'
+            setTimeout(()=>{this.isErr = false},800)
         },
         async getResult(){
             // 通过验证后提交注册

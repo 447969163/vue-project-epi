@@ -14,7 +14,7 @@ router.post('/login',(req,res)=>{
         if (md5(upassword) == result[0].upassword){
             res.send({"code":200,"msg":"登陆成功","token":new jwt(result).generateToken()})
         }else{
-            res.send({"code":403,"msg":"登陆失败"})
+            res.send({"code":403,"msg":"登陆失败,用户名或密码错误"})
         }
     })
 })

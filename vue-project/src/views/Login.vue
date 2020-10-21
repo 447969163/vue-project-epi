@@ -4,9 +4,10 @@
             <span>欢迎登录</span>
             <input type="text" placeholder="用户名" v-model="uname" v-focus>
             <input type="password" placeholder="密码" v-model="upassword">
-            <button @click="login">登录</button>
+            <button @click="verify">登录</button>
             <router-link to="/register">立即注册</router-link>
         </div>
+        <span v-show="isErr">{{errMsg}}</span>
         <Footer />
     </div>
 </template>
@@ -21,16 +22,36 @@ export default {
     data(){
         return {
             uname: '',
-            upassword: ''
+            upassword: '',
+            isErr: false,
+            errMsg: ''
         }
     },
     methods: {
+        // 验证
+        verify(){
+            this.uname&&this.upassword ? this.login() : this.err()
+        },
+        err(){
+            this.errMsg = '未填写账号或密码'
+            this.isErr = true
+            setTimeout(()=>{this.isErr = false},800)
+        },
         async login(){
             // 发送请求
             await this.$axios.post('/login',`uname=${this.uname}&upassword=${this.upassword}`).then((res)=>{
-                localStorage.setItem('token',res.data.token)
-            }).then(()=>{
-                this.$router.push('/user')
+                if (res.data.code == 200){
+                    localStorage.setItem('token',res.data.token)
+                    this.$router.push('/user')
+                }else if(res.data.code == 403){
+                    this.isErr = true
+                    this.errMsg = res.data.msg
+                    setTimeout(()=>{this.isErr = false},800)
+                } else {
+                    this.isErr = true
+                    this.errMsg = '未知错误'
+                    setTimeout(()=>{this.isErr = false},800)
+                }
             })
         }
     }
@@ -83,6 +104,18 @@ export default {
             font-size: 30rem/@num;
             text-align: center;
         }
+    }
+    >span{
+        display: block;
+        width: 600rem/@num;
+        height: 60rem/@num;
+        background-color: darkcyan;
+        font-size: 25rem/@num;
+        color: #FFFFFF;
+        text-align: center;
+        line-height: 60rem/@num;
+        border-radius: 10rem/@num;
+        margin: 0 auto;
     }
 }
 </style>
