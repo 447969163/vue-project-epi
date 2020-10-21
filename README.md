@@ -1,53 +1,42 @@
-# 爬虫
-## 路径
-api目录
-## 数据来源
-|数据来源|源站链接|
-|:---|:---|
-|丁香医生|https://ncov.dxy.cn/ncovh5/view/pneumonia|
-## 模块
-|模块名|
-|:---|
-|express|
-|request|
-|cheerio|
-## 思路
-+ 分析源站
-  + 源站中，每个国家的总疫情数据存储在id为`getStatisticsService`的`script`标签中
-  + 每个省份及下属城市的疫情数据存储在id为`getAreaStat`的`script`标签中
-  + 通过正则去掉多余的内容，并转为json格式
-  + 通过json化的数据取出所需数据
-# 项目
-## 构成
-|类型|组件|
-|:---|:---|
-|页面|Home|
-|页面|SelectLocal|
-|页面|Login|
-|页面|Register|
-|页面|Shop|
-|页面|User|
-|组件|Header|
-|组件|TotalData|
-|组件|Echarts|
-|组件|CityData|
-## 包
-+ vuex
-+ router
-+ echarts
-+ axios
-+ less
-## 思路
-+ Home页面请求数据并通过$bus,$emit,$on的方式传递给子组件
-+ Home页面请求到的数据通过vuex传递给Select页面
-+ Select页面取出省份名，通过路由传参的方式传递给Echarts组件
-+ Echarts组件拿到省份名后，整理数据，交给渲染echarts界面
-+ Echarts通过props方式传递给子组件CityData
-+ CityData监听Echarts组件传入的数据变化
-+ 确认数据拿到了，就开始对数据进行整理，抽出所有城市名
-+ 过滤所点城市的数据，渲染到页面
-+ 路由守卫监听进入/user路由
-+ 如果没有token，则返回至/login路由
-+ 监听注册页面请求的返回结果，如果接口返回数据表示成功状态，则直接跳转到/login路由
 # 效果展示
 https://www.achrome.cn/#/
+
+# 项目功能描述
+实时疫情数据+登录注册+商城(模拟)
+
+# 目录结构
+```tree
+-- api
+  -- pem // 存放token生成所需的公钥及私钥证书
+  -- routes // 存放接口路由
+    -- epiData.js // 爬取源站数据 
+    -- goods.js // 查询商品数据
+    -- insertOrder.js // 插入订单
+    -- login.js // 登录
+    -- procuct.js // 查询商品详情页数据
+    -- register.js // 注册
+    -- userInfo.js // 用户个人中心
+  -- app.js // 入口文件
+  -- jwt.js // 封装jsonwebtoken功能的类
+  -- pool.js // 数据库连接池
+```
+
+# api
++ 技术栈
+  + 爬虫：node+express+request+cheerio
+  + 注册登录/商城：node+express+mysql+jsonwebtoken
++ 实现思路
+  + 爬虫：每访问一次接口，都对源站发送一次请求，以保证每次获取到的，都是最新的数据，然后将请求到的资源通过`cheerio模块`进行过滤，获得所需数据
+  + 注册：向数据库的`user表`插入数据
+  + 登录：用客户端请求携带的用户名作为条件查询`user表`数据，如果密码和数据库中一致，则使用`webjsontoken模块`加密返回给客户端，需要用户数据时，再通过`webjsontoken模块`转回为数据对象。
+  + 商城：查询`goods表`所有数据获取商品数据，`orders表`外键绑定`user表`中的`uid字段`，用来记录对应用户的订单，通过用户唯一`uid`查询用户订单。
+
+# 客户端
++ 技术栈：vue+vuex+router+Echarts+axios
++ 实现思路：
+  + 首页：首页加载的创建阶段，请求数据，并通过`$emit`和`$on`将数据传递给子组件，通过vuex传递给地区选择页面，配置`keep-alive`防止每次返回首页路由都重新发送请求。
+  + 商城页：在页面加载的创建阶段，请求商品数据，并渲染到页面，通过路由传参形式将商品唯一`pid`传递给商品详情页
+  + 商品详情页：根据pid请求商品详情数据并渲染到页面，点击支付按钮时，判断用户是否登录，如果没有登录跳转到登录界面，如果已登录，则默认支付成功，在`orders`数据表中插入订单记录，并跳转至个人中心。
+  + 注册：对表单进行验证，如果必填项为空或两次密码不一致，则返回false，如果通过验证则插入数据库。
+  + 登录：对表单进行验证，如果必填项为空，或密码与数据库不一致，则返回false，如果通过验证，则将token存入localStorage中，并跳转至个人中心。
+  + 个人中心：在页面加载的创建阶段，让请求头携带localStorage中的token，交给接口验证并解密，再将结果渲染到页面。
